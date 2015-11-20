@@ -1,8 +1,10 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.google.appengine.repackaged.com.google.gson.JsonObject;
-import com.google.appengine.repackaged.com.google.gson.JsonParser;
+
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.ecp.sio.twitterAppEngine.model.User;
 
 import javax.servlet.ServletException;
@@ -29,11 +31,16 @@ public class JsonServlet extends HttpServlet {
 
     @Override
     protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Object response = doPost(req);
-        sendResponse(response,resp);
+        Object response = null;
+        try {
+            response = doPost(req);
+        } catch (ApiException e) {
+            resp.setStatus(e.getError().status);
+            sendResponse(e.getError(), resp);
+        }
     }
 
-    protected Object doPost(HttpServletRequest req) {
+    protected Object doPost(HttpServletRequest req) throws IOException, ApiException {
         return null;
     }
 
