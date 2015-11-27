@@ -1,7 +1,7 @@
 package fr.ecp.sio.twitterAppEngine.utils;
 
 
-import org.apache.commons.validator.EmailValidator;
+import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  * Created by Eric on 20/11/15.
@@ -20,7 +20,7 @@ public class ValidationUtils {
     }
 
     public static boolean validateEmail(String email){
-        return EmailValidator.getInstance().isValid(email);
+        return EmailValidator.getInstance(false).isValid(email);
     }
 
 }

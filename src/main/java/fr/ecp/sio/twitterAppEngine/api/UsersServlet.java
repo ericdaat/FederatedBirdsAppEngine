@@ -16,7 +16,7 @@ import java.io.IOException;
 public class UsersServlet extends JsonServlet {
     @Override
     protected Object doGet(HttpServletRequest req) {
-        return null;
+        return UsersRepository.getUsers();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UsersServlet extends JsonServlet {
 
         //get unique id and password hash
         user.id = new ObjectifyFactory().allocateId(User.class).getId();
-        user.password = DigestUtils.shaHex(user.password + user.id);
+        user.password = DigestUtils.sha256Hex(user.password + user.id);
 
         //save user
         long id = UsersRepository.insertUser(user);

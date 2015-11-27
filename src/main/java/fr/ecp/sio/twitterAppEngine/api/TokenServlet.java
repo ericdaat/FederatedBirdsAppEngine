@@ -34,7 +34,7 @@ public class TokenServlet extends JsonServlet{
         //get user from login
         User user = UsersRepository.getUserByLogin(login);
         if(user!=null){
-            String hash = DigestUtils.shaHex(password + user.id);
+            String hash = DigestUtils.sha256Hex(password + user.id);
             if (hash.equals(user.password)){
                 return TokenUtils.generateToken(user.id);
             } else {

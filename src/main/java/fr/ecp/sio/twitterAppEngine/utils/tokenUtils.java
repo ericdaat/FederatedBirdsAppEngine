@@ -2,8 +2,9 @@ package fr.ecp.sio.twitterAppEngine.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
+import org.apache.commons.codec.binary.Base64;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
 
@@ -12,7 +13,12 @@ import java.security.Key;
  */
 public class TokenUtils {
 
-    private static final Key KEY = MacProvider.generateKey();
+    private static final Key KEY;
+    static {
+        byte[] key = Base64.decodeBase64("BYWphxmLrblUgy6LzHdUfSActQw2y9SX");
+        KEY = new SecretKeySpec(key,0,key.length,"AES");
+    }
+
 
     public static String generateToken(long userId){
         return Jwts.builder()

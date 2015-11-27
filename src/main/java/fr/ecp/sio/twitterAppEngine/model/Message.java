@@ -13,9 +13,8 @@ import java.util.Date;
 @Entity
 public class Message {
     @Id
-    public long id;
+    public Long id;
     public String text;
     public Date date;
     public Ref<User>user;
-
 }

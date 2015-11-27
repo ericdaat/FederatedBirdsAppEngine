@@ -3,6 +3,8 @@ package fr.ecp.sio.twitterAppEngine.data;
 import com.googlecode.objectify.ObjectifyService;
 import fr.ecp.sio.twitterAppEngine.model.User;
 
+import java.util.List;
+
 /**
  * Created by Eric on 20/11/15.
  */
@@ -35,6 +37,13 @@ public class UsersRepository {
                 .type(User.class)
                 .id(id)
                 .now();
+    }
+
+    public static List<User> getUsers(){
+        return ObjectifyService.ofy()
+                .load()
+                .type(User.class)
+                .list();
     }
 
     public static long insertUser(User user){
