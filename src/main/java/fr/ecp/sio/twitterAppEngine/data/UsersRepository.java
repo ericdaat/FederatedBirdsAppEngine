@@ -40,11 +40,14 @@ public class UsersRepository {
                 .now();
     }
 
-    public static UsersList getUsers(){
-        return ObjectifyService.ofy()
-                .load()
-                .type(User.class)
-                .list();
+    public static UsersList getUsers() {
+        return new UsersList(
+                ObjectifyService.ofy()
+                        .load()
+                        .type(User.class)
+                        .list(),
+                "dummyCursor"
+        );
     }
 
     public static long allocateNewId() {
@@ -60,24 +63,36 @@ public class UsersRepository {
                 .getId();
     }
 
-    public static UsersList getUserFollowed (long id, int limit){
+    public static UsersList getUserFollowed(long id, int limit) {
         return getUsers();
     }
 
-    public static UsersList getUserFollowed (String continuationToken, int limit, long id){
+    public static UsersList getUserFollowed(String cursor, int limit) {
         return getUsers();
     }
 
-    public static UsersList getUserFollowers (long id, int limit){
+    public static UsersList getUserFollowers(long id) {
         return getUsers();
     }
 
-    public static class UsersList{
-        public List<User> users;
-        public String continuationToken;
+    public static UsersList getUserFollowers(String cursor, long id) {
+        return getUsers();
     }
 
     public static void setUsersFollowed (long followerId, long followedId, boolean isFollowed){
 
     }
+
+    public static class UsersList {
+
+        public final List<User> users;
+        public final String cursor;
+
+        private UsersList(List<User> users, String cursor) {
+            this.users = users;
+            this.cursor = cursor;
+        }
+
+    }
+
 }
