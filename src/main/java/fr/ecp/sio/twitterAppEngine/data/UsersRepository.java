@@ -1,5 +1,6 @@
 package fr.ecp.sio.twitterAppEngine.data;
 
+import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import fr.ecp.sio.twitterAppEngine.model.User;
 
@@ -39,11 +40,16 @@ public class UsersRepository {
                 .now();
     }
 
-    public static List<User> getUsers(){
+    public static UsersList getUsers(){
         return ObjectifyService.ofy()
                 .load()
                 .type(User.class)
                 .list();
+    }
+
+    public static long allocateNewId() {
+        // Sometime we need to allocate an id before persisting, the library allows it
+        return new ObjectifyFactory().allocateId(User.class).getId();
     }
 
     public static long insertUser(User user){
@@ -52,5 +58,26 @@ public class UsersRepository {
                 .entity(user)
                 .now()
                 .getId();
+    }
+
+    public static UsersList getUserFollowed (long id, int limit){
+        return getUsers();
+    }
+
+    public static UsersList getUserFollowed (String continuationToken, int limit, long id){
+        return getUsers();
+    }
+
+    public static UsersList getUserFollowers (long id, int limit){
+        return getUsers();
+    }
+
+    public static class UsersList{
+        public List<User> users;
+        public String continuationToken;
+    }
+
+    public static void setUsersFollowed (long followerId, long followedId, boolean isFollowed){
+
     }
 }

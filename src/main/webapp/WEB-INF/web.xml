@@ -4,7 +4,7 @@
 
     <servlet>
         <servlet-name>user</servlet-name>
-        <servlet-class>fr.ecp.sio.twitterAppEngine.api.UserServlet</servlet-class>
+        <servlet-class>fr.ecp.sio.appenginedemo.api.UserServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>user</servlet-name>
@@ -13,7 +13,7 @@
 
     <servlet>
         <servlet-name>users</servlet-name>
-        <servlet-class>fr.ecp.sio.twitterAppEngine.api.UsersServlet</servlet-class>
+        <servlet-class>fr.ecp.sio.appenginedemo.api.UsersServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>users</servlet-name>
@@ -22,7 +22,7 @@
 
     <servlet>
         <servlet-name>message</servlet-name>
-        <servlet-class>fr.ecp.sio.twitterAppEngine.api.MessageServlet</servlet-class>
+        <servlet-class>fr.ecp.sio.appenginedemo.api.MessageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>message</servlet-name>
@@ -31,21 +31,30 @@
 
     <servlet>
         <servlet-name>messages</servlet-name>
-        <servlet-class>fr.ecp.sio.twitterAppEngine.api.MessagesServlet</servlet-class>
+        <servlet-class>fr.ecp.sio.appenginedemo.api.MessagesServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>messages</servlet-name>
         <url-pattern>messages</url-pattern>
     </servlet-mapping>
 
+
     <servlet>
         <servlet-name>token</servlet-name>
-        <servlet-class>fr.ecp.sio.twitterAppEngine.api.TokenServlet</servlet-class>
+        <servlet-class>fr.ecp.sio.appenginedemo.api.TokenServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>token</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>auth/token</url-pattern>
     </servlet-mapping>
 
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 </web-app>

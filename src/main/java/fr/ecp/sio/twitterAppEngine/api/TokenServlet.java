@@ -19,7 +19,7 @@ public class TokenServlet extends JsonServlet{
     protected String doPost(HttpServletRequest req) throws IOException, ApiException {
 
         //get login and password from request
-        JsonObject params = getJsonParameters(req);
+        JsonObject params = getJsonRequestBody(req);
         String login = params.get("login").getAsString();
         String password = params.get("password").getAsString();
 

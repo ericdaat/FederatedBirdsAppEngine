@@ -1,8 +1,5 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
-
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
@@ -28,18 +25,25 @@ public class JsonServlet extends HttpServlet {
     protected static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("Bearer (.+)");
 
     @Override
-    protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Object response = doGet(req);
+    protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        Object response = null;
+        try {
+            response = doGet(req);
+        } catch (ApiException e) {
+            resp.setStatus(e.getError().status);
+            sendResponse(e.getError(), resp);
+        }
         sendResponse(response,resp);
     }
 
-    protected Object doGet (HttpServletRequest req) {
+    protected Object doGet (HttpServletRequest req) throws ServletException, IOException, ApiException{
         return null;
     }
 
     @Override
-    protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    protected final void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         try {
             Object response = doPost(req);
             sendResponse(response,resp);
@@ -49,17 +53,25 @@ public class JsonServlet extends HttpServlet {
         }
     }
 
-    protected Object doPost(HttpServletRequest req) throws IOException, ApiException {
+    protected Object doPost(HttpServletRequest req)
+            throws ServletException, IOException, ApiException {
         return null;
     }
 
     @Override
-    protected final void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Object response = doDelete(req);
-        sendResponse(response,resp);
+    protected final void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        try {
+            Object response = doDelete(req);
+            sendResponse(response,resp);
+        } catch (ApiException e) {
+            resp.setStatus(e.getError().status);
+            sendResponse(e.getError(), resp);
+        }
     }
 
-    protected Object doDelete(HttpServletRequest req){
+    protected Object doDelete(HttpServletRequest req)
+            throws ServletException, IOException, ApiException {
         return null;
     }
 
@@ -82,16 +94,13 @@ public class JsonServlet extends HttpServlet {
         }
     }
 
-    protected static JsonObject getJsonParameters(HttpServletRequest req) throws IOException {
+    protected static JsonObject getJsonRequestBody(HttpServletRequest req) throws IOException {
         return new JsonParser()
-                .parse(
-                        new InputStreamReader(req.getInputStream())
-                ).getAsJsonObject();
+                .parse(req.getReader())
+                .getAsJsonObject();
     }
 
-    protected static <T> T getJsonParameters (HttpServletRequest req, Class<T> type) throws IOException {
-        return GsonFactory.getGson().fromJson(
-                new InputStreamReader(req.getInputStream()),
-                type);
+    protected static <T> T getJsonRequestBody(HttpServletRequest req, Class<T> type) throws IOException {
+        return GsonFactory.getGson().fromJson(req.getReader(), type);
     }
 }
