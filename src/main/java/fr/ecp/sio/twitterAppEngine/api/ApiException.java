@@ -20,5 +20,4 @@ public class ApiException extends Exception {
         return this.error;
     }
 
-
 }

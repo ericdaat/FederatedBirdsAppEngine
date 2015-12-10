@@ -44,7 +44,8 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>user</servlet-name>
-        <!-- This will match any URL path starting with "users/". The * wildcard can only be at the end and there is no way the restrict the pattern. -->
+        <!-- This will match any URL path starting with "users/".
+        The * wildcard can only be at the end and there is no way to restrict the pattern. -->
         <url-pattern>users/*</url-pattern>
     </servlet-mapping>
 
@@ -82,6 +83,15 @@
     <servlet-mapping>
         <servlet-name>token</servlet-name>
         <url-pattern>auth/token</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>upload</servlet-name>
+        <servlet-class>fr.ecp.sio.twitterAppEngine.api.UploadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>upload</servlet-name>
+        <url-pattern>upload</url-pattern>
     </servlet-mapping>
 
 </web-app>

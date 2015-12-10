@@ -50,19 +50,6 @@ public class UsersRepository {
         );
     }
 
-    public static long allocateNewId() {
-        // Sometime we need to allocate an id before persisting, the library allows it
-        return new ObjectifyFactory().allocateId(User.class).getId();
-    }
-
-    public static long insertUser(User user){
-        return ObjectifyService.ofy()
-                .save()
-                .entity(user)
-                .now()
-                .getId();
-    }
-
     public static UsersList getUserFollowed(long id, int limit) {
         return getUsers();
     }
@@ -80,7 +67,21 @@ public class UsersRepository {
     }
 
     public static void setUsersFollowed (long followerId, long followedId, boolean isFollowed){
+        User follower = getUser(followerId);
+        User followed = getUser(followedId);
+    }
 
+    public static long allocateNewId() {
+        // Sometimes we need to allocate an id before persisting, the library allows it
+        return new ObjectifyFactory().allocateId(User.class).getId();
+    }
+
+    public static long insertUser(User user){
+        return ObjectifyService.ofy()
+                .save()
+                .entity(user)
+                .now()
+                .getId();
     }
 
     public static class UsersList {
@@ -92,7 +93,5 @@ public class UsersRepository {
             this.users = users;
             this.cursor = cursor;
         }
-
     }
-
 }

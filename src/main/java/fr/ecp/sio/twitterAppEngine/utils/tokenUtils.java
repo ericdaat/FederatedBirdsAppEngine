@@ -1,17 +1,25 @@
 package fr.ecp.sio.twitterAppEngine.utils;
 
+import fr.ecp.sio.twitterAppEngine.api.ApiException;
+import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
+import fr.ecp.sio.twitterAppEngine.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
  * Created by Eric on 20/11/15.
  */
 public class TokenUtils {
+
+    protected static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("Bearer (.+)");
 
     private static final Key KEY;
     static {
@@ -36,4 +44,17 @@ public class TokenUtils {
         );
     }
 
+    public static User requestToUser(HttpServletRequest req) throws ApiException {
+        String auth = req.getHeader("Authorization");
+        if (auth != null){
+            Matcher m = AUTHORIZATION_PATTERN.matcher(auth);
+            if (!m.matches()){
+                throw new ApiException(401,"invalidAuthorization","Invalid token");
+            }
+            long id = TokenUtils.parseToken(m.group(1));
+            return UsersRepository.getUser(id);
+        } else {
+            return null;
+        }
+    }
 }

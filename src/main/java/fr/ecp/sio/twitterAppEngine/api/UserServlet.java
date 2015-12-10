@@ -2,6 +2,7 @@ package fr.ecp.sio.twitterAppEngine.api;
 
 import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
 import fr.ecp.sio.twitterAppEngine.model.User;
+import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,13 +16,15 @@ public class UserServlet extends JsonServlet{
     // A GET request should simply return the user
     @Override
     protected User doGet(HttpServletRequest req) throws ServletException, IOException, ApiException {
-        // TODO: Extract the id of the user from the last part of the path of the request
-        // TODO: Check if this id is syntactically correct
-        long id = 0;
-        // Lookup in repository
-        User user = UsersRepository.getUser(id);
-        // TODO: Not found?
-        // TODO: Add some mechanism to hide private info about a user (email) except if he is the caller
+        User user = null;
+        String pathInfo = req.getPathInfo().substring(1);
+        
+        if (pathInfo.equals("me")){
+            user = TokenUtils.requestToUser(req);
+        } else {
+            long id = Long.parseLong(pathInfo);
+            user = UsersRepository.getUser(id);
+        }
         return user;
     }
 
@@ -44,5 +47,4 @@ public class UserServlet extends JsonServlet{
         // A DELETE request shall not have a response body
         return null;
     }
-
 }

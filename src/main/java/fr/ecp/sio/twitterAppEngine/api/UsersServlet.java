@@ -1,6 +1,5 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
-
 import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
 import fr.ecp.sio.twitterAppEngine.model.User;
 import fr.ecp.sio.twitterAppEngine.utils.MD5Utils;
@@ -20,9 +19,12 @@ public class UsersServlet extends JsonServlet {
 
     // A GET request should return a list of users
     @Override
-    protected UsersRepository.UsersList doGet(HttpServletRequest req) throws ServletException, IOException, ApiException {
+    protected UsersRepository.UsersList doGet(HttpServletRequest req)
+            throws ServletException, IOException, ApiException {
         // TODO: define parameters to search/filter users by login, with limit, order...
+
         // TODO: define parameters to get the followings and the followers of a user given its id
+
         return UsersRepository.getUsers();
     }
 
@@ -36,8 +38,7 @@ public class UsersServlet extends JsonServlet {
         if (user == null) {
             throw new ApiException(400, "invalidRequest", "Invalid JSON body");
         }
-
-        // Perform all the usul checkings
+        // Perform all the usual checks
         if (!ValidationUtils.validateLogin(user.login)) {
             throw new ApiException(400, "invalidLogin", "Login did not match the specs");
         }
@@ -47,7 +48,6 @@ public class UsersServlet extends JsonServlet {
         if (!ValidationUtils.validateEmail(user.email)) {
             throw new ApiException(400, "invalidEmail", "Invalid email");
         }
-
         if (UsersRepository.getUserByLogin(user.login) != null) {
             throw new ApiException(400, "duplicateLogin", "Duplicate login");
         }

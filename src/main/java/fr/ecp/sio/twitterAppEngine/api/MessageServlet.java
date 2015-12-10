@@ -17,7 +17,7 @@ public class MessageServlet extends JsonServlet {
     protected Message doGet(HttpServletRequest req) throws ServletException, IOException, ApiException {
         // TODO: Extract the id of the message from the last part of the path of the request
         // TODO: Check if this id is syntactically correct
-        long id = 0;
+        long id = RequestUtils.requestToId(req);
         // Lookup in repository
         Message message = MessagesRepository.getMessage(id);
         // TODO: Not found?
