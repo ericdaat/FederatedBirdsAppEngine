@@ -17,6 +17,6 @@ public class UploadServlet extends JsonServlet {
     @Override
     protected User doGet(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
-        return TokenUtils.requestToUser(req);
+        return getAuthenticatedUser(req);
     }
 }

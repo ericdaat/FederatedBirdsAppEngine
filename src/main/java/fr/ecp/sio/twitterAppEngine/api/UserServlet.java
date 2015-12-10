@@ -2,7 +2,6 @@ package fr.ecp.sio.twitterAppEngine.api;
 
 import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
 import fr.ecp.sio.twitterAppEngine.model.User;
-import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +15,22 @@ public class UserServlet extends JsonServlet{
     // A GET request should simply return the user
     @Override
     protected User doGet(HttpServletRequest req) throws ServletException, IOException, ApiException {
+        //starting with a null user
         User user = null;
+        //get the path and remove the "/" from it
         String pathInfo = req.getPathInfo().substring(1);
-        
+
         if (pathInfo.equals("me")){
-            user = TokenUtils.requestToUser(req);
+            /**
+             * if user doesn't know his id, he can use me keyword
+             * we look at his token to get his id and then return him as user
+             */
+            user = getAuthenticatedUser(req);
         } else {
+            /**
+             * if request is on an user id, simply find the corresponding user
+             * and return it
+             */
             long id = Long.parseLong(pathInfo);
             user = UsersRepository.getUser(id);
         }

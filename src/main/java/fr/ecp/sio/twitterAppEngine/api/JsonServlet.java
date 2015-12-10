@@ -2,6 +2,7 @@ package fr.ecp.sio.twitterAppEngine.api;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
 import fr.ecp.sio.twitterAppEngine.gson.GsonFactory;
 import fr.ecp.sio.twitterAppEngine.model.User;
 import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
@@ -11,12 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Eric on 20/11/15.
  */
 public class JsonServlet extends HttpServlet {
+
+    protected static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("Bearer (.+)");
 
     @Override
     protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -75,7 +79,17 @@ public class JsonServlet extends HttpServlet {
     }
 
     protected User getAuthenticatedUser(HttpServletRequest req) throws ApiException {
-        return TokenUtils.requestToUser(req);
+        String auth = req.getHeader("Authorization");
+        if (auth != null){
+            Matcher m = AUTHORIZATION_PATTERN.matcher(auth);
+            if (!m.matches()){
+                throw new ApiException(401,"invalidAuthorization","Invalid token");
+            }
+            long id = TokenUtils.parseToken(m.group(1));
+            return UsersRepository.getUser(id);
+        } else {
+            return null;
+        }
     }
 
     protected static JsonObject getJsonRequestBody(HttpServletRequest req) throws IOException {

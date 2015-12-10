@@ -43,18 +43,4 @@ public class TokenUtils {
                 .getId()
         );
     }
-
-    public static User requestToUser(HttpServletRequest req) throws ApiException {
-        String auth = req.getHeader("Authorization");
-        if (auth != null){
-            Matcher m = AUTHORIZATION_PATTERN.matcher(auth);
-            if (!m.matches()){
-                throw new ApiException(401,"invalidAuthorization","Invalid token");
-            }
-            long id = TokenUtils.parseToken(m.group(1));
-            return UsersRepository.getUser(id);
-        } else {
-            return null;
-        }
-    }
 }
