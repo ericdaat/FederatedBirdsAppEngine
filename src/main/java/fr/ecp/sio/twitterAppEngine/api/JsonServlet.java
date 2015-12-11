@@ -101,4 +101,6 @@ public class JsonServlet extends HttpServlet {
     protected static <T> T getJsonRequestBody(HttpServletRequest req, Class<T> type) throws IOException {
         return GsonFactory.getGson().fromJson(req.getReader(), type);
     }
+
+
 }

@@ -35,6 +35,7 @@ public class UsersServlet extends JsonServlet {
             String[] params = query.split("&");
             User me = getAuthenticatedUser(req);
             long id = 0;
+            int limit = 20;
 
             Map<String, String> paramsMap = new HashMap<String, String>();
             for (String param : params)
@@ -51,7 +52,7 @@ public class UsersServlet extends JsonServlet {
                 } else {
                     id = Long.parseLong(value);
                 }
-                users = UsersRepository.getUserFollowed(id,20);
+                users = UsersRepository.getUserFollowed(id,limit);
             } else if (paramsMap.containsKey(FOLLOWEDBY)) {
                 String value = paramsMap.get(FOLLOWEDBY);
                 if (value.equals("me")) {
