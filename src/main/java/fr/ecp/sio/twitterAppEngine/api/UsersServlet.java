@@ -1,6 +1,7 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
 import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
+import fr.ecp.sio.twitterAppEngine.data.UsersRepository.UsersList;
 import fr.ecp.sio.twitterAppEngine.model.User;
 import fr.ecp.sio.twitterAppEngine.utils.MD5Utils;
 import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
@@ -10,6 +11,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Eric on 20/11/15.
@@ -17,15 +20,52 @@ import java.io.IOException;
 
 public class UsersServlet extends JsonServlet {
 
+    private static String FOLLOWEROF = "followerOf";
+    private static String FOLLOWEDBY = "followedBy";
+
     // A GET request should return a list of users
     @Override
-    protected UsersRepository.UsersList doGet(HttpServletRequest req)
+    protected UsersList doGet(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
-        // TODO: define parameters to search/filter users by login, with limit, order...
 
-        // TODO: define parameters to get the followings and the followers of a user given its id
+        String query = req.getQueryString();
+        UsersList users = null;
 
-        return UsersRepository.getUsers();
+        if (query != null){
+            String[] params = query.split("&");
+            User me = getAuthenticatedUser(req);
+            long id = 0;
+
+            Map<String, String> paramsMap = new HashMap<String, String>();
+            for (String param : params)
+            {
+                String name = param.split("=")[0];
+                String value = param.split("=")[1];
+                paramsMap.put(name, value);
+            }
+
+            if (paramsMap.containsKey(FOLLOWEROF)){
+                String value = paramsMap.get(FOLLOWEROF);
+                if (value.equals("me")) {
+                    id = me.id;
+                } else {
+                    id = Long.parseLong(value);
+                }
+                users = UsersRepository.getUserFollowed(id,20);
+            } else if (paramsMap.containsKey(FOLLOWEDBY)) {
+                String value = paramsMap.get(FOLLOWEDBY);
+                if (value.equals("me")) {
+                    id = me.id;
+                } else {
+                    id = Long.parseLong(value);
+                }
+                users = UsersRepository.getUserFollowers(id);
+            }
+        } else {
+            users = UsersRepository.getUsers();
+        }
+
+        return users;
     }
 
     // A POST request can be used to create a user
