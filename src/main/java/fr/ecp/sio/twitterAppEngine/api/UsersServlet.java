@@ -31,7 +31,6 @@ public class UsersServlet extends JsonServlet {
         UsersList users = null;
 
         if (paramsMap != null){
-            User me = getLoggedInUser(req);
 
             long id;
             int limit = 20;
@@ -39,18 +38,22 @@ public class UsersServlet extends JsonServlet {
             if (paramsMap.containsKey(FOLLOWEROF)){
                 String value = paramsMap.get(FOLLOWEROF);
                 if (value.equals("me")) {
-                    id = me.id;
+                    id = getLoggedInUser(req).id;
+                } else if (ValidationUtils.validateId(value)){
+                        id = Long.parseLong(value);
                 } else {
-                    id = Long.parseLong(value);
+                    throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
                 users = UsersRepository.getUserFollowed(id,limit);
 
             } else if (paramsMap.containsKey(FOLLOWEDBY)) {
                 String value = paramsMap.get(FOLLOWEDBY);
-                if (value.equals("me")) {
-                    id = me.id;
-                } else {
+                if (value.equals("me") ) {
+                    id = getLoggedInUser(req).id;
+                } else if (ValidationUtils.validateId(value)){
                     id = Long.parseLong(value);
+                } else {
+                    throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
                 users = UsersRepository.getUserFollowers(id);
             }

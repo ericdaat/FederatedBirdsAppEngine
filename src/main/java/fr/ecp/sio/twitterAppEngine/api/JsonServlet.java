@@ -111,17 +111,20 @@ public class JsonServlet extends HttpServlet {
         /**
          * this function will return the targeted user from request url. eg :
          * from /users/1 : we return getUser(1)
-         * from /users/me : we return getAuthenticatedUser(req)
+         * from /users/me : we return the logged in user
          */
 
         String pathInfo = req.getPathInfo().substring(1);
 
         if (pathInfo.equals("me")){
+            User me = getLoggedInUser(req);
             /**
              * if user doesn't know his id, he can use me keyword
              * we look at his token to get his id and then return him as user
              */
-            return getAuthenticatedUser(req);
+
+            return me;
+
         } else if (ValidationUtils.validateId(pathInfo)){
             /**
              * if request is on an user id, simply find the corresponding user
