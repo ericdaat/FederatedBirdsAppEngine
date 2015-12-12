@@ -66,10 +66,7 @@ public class UsersRepository {
         return getUsers();
     }
 
-    public static void setUsersFollowed (long followerId, long followedId, boolean isFollowed){
-        User follower = getUser(followerId);
-        User followed = getUser(followedId);
-    }
+    public static void setUsersFollowed (long followerId, long followedId, boolean isFollowed){}
 
     public static long allocateNewId() {
         // Sometimes we need to allocate an id before persisting, the library allows it

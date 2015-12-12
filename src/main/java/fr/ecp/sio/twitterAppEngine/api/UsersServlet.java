@@ -28,22 +28,13 @@ public class UsersServlet extends JsonServlet {
     protected UsersList doGet(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
 
-        String query = req.getQueryString();
+        Map <String,String> paramsMap = getRequestParams(req);
         UsersList users = null;
 
-        if (query != null){
-            String[] params = query.split("&");
+        if (paramsMap != null){
             User me = getAuthenticatedUser(req);
-            long id = 0;
+            long id;
             int limit = 20;
-
-            Map<String, String> paramsMap = new HashMap<String, String>();
-            for (String param : params)
-            {
-                String name = param.split("=")[0];
-                String value = param.split("=")[1];
-                paramsMap.put(name, value);
-            }
 
             if (paramsMap.containsKey(FOLLOWEROF)){
                 String value = paramsMap.get(FOLLOWEROF);
@@ -53,6 +44,7 @@ public class UsersServlet extends JsonServlet {
                     id = Long.parseLong(value);
                 }
                 users = UsersRepository.getUserFollowed(id,limit);
+
             } else if (paramsMap.containsKey(FOLLOWEDBY)) {
                 String value = paramsMap.get(FOLLOWEDBY);
                 if (value.equals("me")) {

@@ -6,12 +6,16 @@ import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
 import fr.ecp.sio.twitterAppEngine.gson.GsonFactory;
 import fr.ecp.sio.twitterAppEngine.model.User;
 import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
+import fr.ecp.sio.twitterAppEngine.utils.ValidationUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,7 @@ import java.util.regex.Pattern;
 public class JsonServlet extends HttpServlet {
 
     protected static final Pattern AUTHORIZATION_PATTERN = Pattern.compile("Bearer (.+)");
+    protected static Logger LOG = Logger.getLogger(JsonServlet.class.getSimpleName());
 
     @Override
     protected final void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -100,6 +105,70 @@ public class JsonServlet extends HttpServlet {
 
     protected static <T> T getJsonRequestBody(HttpServletRequest req, Class<T> type) throws IOException {
         return GsonFactory.getGson().fromJson(req.getReader(), type);
+    }
+
+    protected User getUserFromRequest(HttpServletRequest req) throws ApiException {
+        /**
+         * this function will return the targeted user from request url. eg :
+         * from /users/1 : we return getUser(1)
+         * from /users/me : we return getAuthenticatedUser(req)
+         */
+
+        String pathInfo = req.getPathInfo().substring(1);
+
+        if (pathInfo.equals("me")){
+            /**
+             * if user doesn't know his id, he can use me keyword
+             * we look at his token to get his id and then return him as user
+             */
+            return getAuthenticatedUser(req);
+        } else if (ValidationUtils.validateId(pathInfo)){
+            /**
+             * if request is on an user id, simply find the corresponding user
+             * and return it
+             */
+            long id = Long.parseLong(pathInfo);
+            return UsersRepository.getUser(id);
+        } else {
+            throw new ApiException(400,"wrongId","id is not valid");
+        }
+    }
+
+    protected boolean verifyUserPermission (HttpServletRequest req) throws ApiException {
+        User me = getAuthenticatedUser(req);
+        if (me != null){
+            /**
+             * If me isn't null, user is logged in
+             * Now check if the user is indeed
+             * trying to modify his own account
+             */
+            User target = getUserFromRequest(req);
+            return me.id == target.id;
+        } else {
+            //If me is null, then user is not logged in, return false
+            return false;
+        }
+    }
+
+    protected Map<String, String> getRequestParams(HttpServletRequest req){
+
+        String query = req.getQueryString();
+
+        if (query != null){
+            String[] params = query.split("&");
+
+            Map<String, String> paramsMap = new HashMap<String, String>();
+            for (String param : params)
+            {
+                String name = param.split("=")[0];
+                String value = param.split("=")[1];
+                paramsMap.put(name, value);
+            }
+
+            return paramsMap;
+        } else {
+            return null;
+        }
     }
 
 
