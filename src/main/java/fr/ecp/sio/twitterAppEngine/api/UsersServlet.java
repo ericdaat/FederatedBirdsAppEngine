@@ -11,7 +11,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,7 +31,8 @@ public class UsersServlet extends JsonServlet {
         UsersList users = null;
 
         if (paramsMap != null){
-            User me = getAuthenticatedUser(req);
+            User me = getLoggedInUser(req);
+
             long id;
             int limit = 20;
 

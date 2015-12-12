@@ -1,12 +1,17 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
-import fr.ecp.sio.twitterAppEngine.model.User;
-import fr.ecp.sio.twitterAppEngine.utils.TokenUtils;
-
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.*;
+import com.google.appengine.api.images.*;
+import fr.ecp.sio.twitterAppEngine.model.User;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -15,17 +20,26 @@ import java.io.IOException;
 public class UploadServlet extends JsonServlet {
 
     @Override
-    protected User doGet(HttpServletRequest req)
+    protected String doPost(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
-        return null;
-    }
 
-    @Override
-    protected Object doPost(HttpServletRequest req) throws ServletException, IOException, ApiException {
         User me = getAuthenticatedUser(req);
 
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
+        Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
+        List<BlobKey> blobKeys = blobs.get("uploadedFile");
 
-        return null;
+        me.keyAvatar = blobKeys.get(0).getKeyString();
+
+        String imageURL = imagesService.getServingUrl(
+                ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0))
+        );
+
+        me.avatar = imageURL;
+
+        return imageURL;
     }
+
 }

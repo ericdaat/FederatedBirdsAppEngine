@@ -26,12 +26,7 @@ public class UserServlet extends JsonServlet{
     protected User doPost(HttpServletRequest req) throws ServletException, IOException, ApiException {
 
         //get the logged in user
-        User me = getAuthenticatedUser(req);
-
-        if (me == null){
-            //if user isn't logged in, don't let him do any post
-            throw new ApiException(400,"unauthorized","You must log in");
-        }
+        User me = getLoggedInUser(req);
 
         //get parameters from request. Here, it would only contain follow = true or false
         Map<String, String> paramsMap = getRequestParams(req);

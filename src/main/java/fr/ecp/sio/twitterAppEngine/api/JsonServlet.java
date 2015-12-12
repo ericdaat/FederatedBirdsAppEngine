@@ -33,11 +33,11 @@ public class JsonServlet extends HttpServlet {
         Object response = null;
         try {
             response = doGet(req);
+            sendResponse(response, resp);
         } catch (ApiException e) {
             resp.setStatus(e.getError().status);
             sendResponse(e.getError(), resp);
         }
-        sendResponse(response,resp);
     }
 
     protected Object doGet (HttpServletRequest req) throws ServletException, IOException, ApiException{
@@ -134,20 +134,21 @@ public class JsonServlet extends HttpServlet {
         }
     }
 
-    protected boolean verifyUserPermission (HttpServletRequest req) throws ApiException {
+    protected User getLoggedInUser (HttpServletRequest req) throws ApiException {
         User me = getAuthenticatedUser(req);
-        if (me != null){
-            /**
-             * If me isn't null, user is logged in
-             * Now check if the user is indeed
-             * trying to modify his own account
-             */
-            User target = getUserFromRequest(req);
-            return me.id == target.id;
+        if (me == null){
+            throw new ApiException(400,"loggedInError","You are not logged in");
         } else {
-            //If me is null, then user is not logged in, return false
-            return false;
+            return me;
         }
+    }
+
+    protected boolean verifyUserPermission (HttpServletRequest req) throws ApiException {
+
+        User me = getLoggedInUser(req);
+        User target = getUserFromRequest(req);
+
+        return (me.equals(target));
     }
 
     protected Map<String, String> getRequestParams(HttpServletRequest req){
