@@ -6,10 +6,10 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>fr.ecp.sio</groupId>
-    <artifactId>appengine-demo</artifactId>
+    <artifactId>federatedbirdsappengine</artifactId>
 
     <properties>
-        <app.id>your-app-id</app.id>
+        <app.id>storied-surface-116017</app.id>
         <app.version>1</app.version>
         <appengine.version>1.9.28</appengine.version>
         <gcloud.plugin.version>2.0.9.84.v20151028</gcloud.plugin.version>
@@ -82,6 +82,11 @@
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
             <version>4.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine.tools</groupId>
+            <artifactId>appengine-gcs-client</artifactId>
+            <version>RELEASE</version>
         </dependency>
 
     </dependencies>

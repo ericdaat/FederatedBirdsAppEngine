@@ -21,7 +21,6 @@ public class User {
     public String login;
 
     public String avatar;
-    public String keyAvatar;
     public String coverPicture;
 
     @Index

@@ -27,6 +27,7 @@ public class UsersServlet extends JsonServlet {
     protected UsersList doGet(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
 
+
         Map <String,String> paramsMap = getRequestParams(req);
         UsersList users = null;
 
@@ -34,6 +35,8 @@ public class UsersServlet extends JsonServlet {
 
             long id;
             int limit = 20;
+            //int limit = Integer.parseInt(req.getHeader("limit"));
+            //String continuationToken = req.getHeader("continuationToken");
 
             if (paramsMap.containsKey(FOLLOWEROF)){
                 String value = paramsMap.get(FOLLOWEROF);

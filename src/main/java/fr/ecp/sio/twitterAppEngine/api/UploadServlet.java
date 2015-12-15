@@ -1,45 +1,55 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.gson.JsonObject;
 
-import com.google.appengine.api.blobstore.*;
-import com.google.appengine.api.images.*;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.channels.Channels;
+
+import com.google.appengine.tools.cloudstorage.*;
 import fr.ecp.sio.twitterAppEngine.model.User;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-
 /**
- * Created by Eric on 10/12/15.
+ * Created by Eric on 15/12/15.
  */
 public class UploadServlet extends JsonServlet {
 
+    private static String PATH = "path";
+    private static String BUCKETNAME = "federatedbirds";
+
+
+    private final GcsService gcsService =
+            GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
+
     @Override
-    protected String doPost(HttpServletRequest req)
-            throws ServletException, IOException, ApiException {
+    protected String doPost(HttpServletRequest req) throws ServletException, IOException, ApiException {
+        User me = getLoggedInUser(req);
+        JsonObject body = getJsonRequestBody(req);
+        String path;
+        
+        if (body.has(PATH)){
+            path = body.get(PATH).getAsString();
+        } else {
+            throw new ApiException(400,"bodyError","Must specify a path");
+        }
 
-        User me = getAuthenticatedUser(req);
+        BufferedImage avatar = ImageIO.read(new File(path));
 
-        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-        ImagesService imagesService = ImagesServiceFactory.getImagesService();
+        GcsFilename fileName = new GcsFilename(BUCKETNAME,me.login + "_avatar");
+        GcsOutputChannel outputChannel =
+                gcsService.createOrReplace(fileName, GcsFileOptions.getDefaultInstance());
 
-        Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-        List<BlobKey> blobKeys = blobs.get("uploadedFile");
+        @SuppressWarnings("resource")
+        ObjectOutputStream oout =
+                new ObjectOutputStream(Channels.newOutputStream(outputChannel));
+        oout.writeObject(avatar);
+        oout.close();
 
-        me.keyAvatar = blobKeys.get(0).getKeyString();
-
-        String imageURL = imagesService.getServingUrl(
-                ServingUrlOptions.Builder.withBlobKey(blobKeys.get(0))
-        );
-
-        me.avatar = imageURL;
-
-        return imageURL;
+        return null;
     }
-
 }

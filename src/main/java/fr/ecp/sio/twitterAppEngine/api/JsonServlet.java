@@ -174,6 +174,4 @@ public class JsonServlet extends HttpServlet {
             return null;
         }
     }
-
-
 }
