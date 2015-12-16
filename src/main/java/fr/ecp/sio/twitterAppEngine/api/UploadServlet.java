@@ -1,15 +1,16 @@
 package fr.ecp.sio.twitterAppEngine.api;
 
+import com.google.common.io.ByteStreams;
 import com.google.gson.JsonObject;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.channels.Channels;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 import com.google.appengine.tools.cloudstorage.*;
 import fr.ecp.sio.twitterAppEngine.model.User;
@@ -30,26 +31,30 @@ public class UploadServlet extends JsonServlet {
     protected String doPost(HttpServletRequest req) throws ServletException, IOException, ApiException {
         User me = getLoggedInUser(req);
         JsonObject body = getJsonRequestBody(req);
-        String path;
         
-        if (body.has(PATH)){
-            path = body.get(PATH).getAsString();
-        } else {
+        if (!body.has(PATH)){
             throw new ApiException(400,"bodyError","Must specify a path");
         }
 
-        BufferedImage avatar = ImageIO.read(new File(path));
+        String path = body.get(PATH).getAsString();
 
-        GcsFilename fileName = new GcsFilename(BUCKETNAME,me.login + "_avatar");
-        GcsOutputChannel outputChannel =
-                gcsService.createOrReplace(fileName, GcsFileOptions.getDefaultInstance());
+        InputStream inputStream = UploadServlet.class.getResourceAsStream(path);
+        byte[] bytes = ByteStreams.toByteArray(inputStream);
+
+        GcsFilename fileName = new GcsFilename(BUCKETNAME,me.login + "_avatar.jpg");
+
+        GcsFileOptions options = new GcsFileOptions.Builder()
+                .mimeType("image/jpeg")
+                .acl("public-read")
+                .build();
 
         @SuppressWarnings("resource")
-        ObjectOutputStream oout =
-                new ObjectOutputStream(Channels.newOutputStream(outputChannel));
-        oout.writeObject(avatar);
-        oout.close();
+        GcsOutputChannel outputChannel =
+                gcsService.createOrReplace(fileName,options);
+        outputChannel.write(ByteBuffer.wrap(bytes));
+        outputChannel.close();
 
-        return null;
+
+        return "done";
     }
 }
