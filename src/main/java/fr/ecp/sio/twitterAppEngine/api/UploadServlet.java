@@ -10,6 +10,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.tools.cloudstorage.*;
+import com.googlecode.objectify.ObjectifyService;
 import fr.ecp.sio.twitterAppEngine.model.User;
 
 /**
@@ -59,6 +60,11 @@ public class UploadServlet extends JsonServlet {
                         .Builder.withGoogleStorageFileName("/gs/" + BUCKETNAME + "/" + name);
 
         me.avatar = imagesService.getServingUrl(urlOptions);
+
+        ObjectifyService.ofy()
+                .save()
+                .entity(me)
+                .now();
 
         return "image uploaded at " + me.avatar;
     }
