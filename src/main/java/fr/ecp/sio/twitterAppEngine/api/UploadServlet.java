@@ -50,7 +50,7 @@ public class UploadServlet extends JsonServlet {
 
         @SuppressWarnings("resource")
         GcsOutputChannel outputChannel =
-                gcsService.createOrReplace(fileName, GcsFileOptions.getDefaultInstance());
+                gcsService.createOrReplace(fileName, options);
         outputChannel.write(ByteBuffer.wrap(data));
         outputChannel.close();
 

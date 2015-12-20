@@ -31,7 +31,7 @@ public class UserServlet extends JsonServlet{
         //get parameters from request. Here, it would only contain follow = true or false
         Map<String, String> paramsMap = getRequestParams(req);
 
-        if (paramsMap !=null && paramsMap.containsKey("follow")) {
+        if (paramsMap != null && paramsMap.containsKey("follow")) {
             /**
              * Handle following/unfollowing a user here
              * get follow parameter, parse it as boolean, and follow or unfollow user accordingly

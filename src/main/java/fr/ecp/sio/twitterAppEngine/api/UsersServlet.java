@@ -27,12 +27,11 @@ public class UsersServlet extends JsonServlet {
     protected UsersList doGet(HttpServletRequest req)
             throws ServletException, IOException, ApiException {
 
+        Map <String, String> paramsMap = getRequestParams(req);
 
-        Map <String,String> paramsMap = getRequestParams(req);
         UsersList users = null;
 
         if (paramsMap != null){
-
             long id;
             int limit = 20;
             //int limit = Integer.parseInt(req.getHeader("limit"));
