@@ -3,7 +3,7 @@ package fr.ecp.sio.twitterAppEngine.model;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 
 import java.util.Date;
 
@@ -16,5 +16,7 @@ public class Message {
     public Long id;
     public String text;
     public Date date;
+
+    @Load
     public Ref<User>user;
 }

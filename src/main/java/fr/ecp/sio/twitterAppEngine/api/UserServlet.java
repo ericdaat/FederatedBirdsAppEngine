@@ -37,16 +37,16 @@ public class UserServlet extends JsonServlet{
              * get follow parameter, parse it as boolean, and follow or unfollow user accordingly
              */
             String param = paramsMap.get("follow");
-            long idToFollow = getUserFromRequest(req).id;
+            User target = getUserFromRequest(req);
 
-            if (me.id == idToFollow) {
+            if (me.id == target.id) {
                 //a user can't follow/unfollow himself
                 throw new ApiException(400,"followError","You can't follow/unfollow yourself");
             }
 
-            UsersRepository.setUsersFollowed(
-                    me.id,
-                    idToFollow,
+            UsersRepository.setUserFollowed(
+                    me,
+                    target,
                     Boolean.parseBoolean(param)
             );
 

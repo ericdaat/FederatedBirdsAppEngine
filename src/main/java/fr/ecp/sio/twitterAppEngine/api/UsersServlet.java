@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -46,7 +47,7 @@ public class UsersServlet extends JsonServlet {
                 } else {
                     throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
-                users = UsersRepository.getUserFollowed(id,limit);
+                users = UsersRepository.getUserFollowing(id,limit,"dummy cursor");
 
             } else if (paramsMap.containsKey(FOLLOWEDBY)) {
                 String value = paramsMap.get(FOLLOWEDBY);
@@ -57,10 +58,10 @@ public class UsersServlet extends JsonServlet {
                 } else {
                     throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
-                users = UsersRepository.getUserFollowers(id);
+                users = UsersRepository.getUserFollowers(id,limit,"dummy cursor");
             }
         } else {
-            users = UsersRepository.getUsers();
+            users = UsersRepository.getUsers(20,null);
         }
 
         return users;
@@ -93,18 +94,22 @@ public class UsersServlet extends JsonServlet {
             throw new ApiException(400, "duplicateEmail", "Duplicate email");
         }
 
-        user.avatar = "http://www.gravatar.com/avatar/" + MD5Utils.md5Hex(user.email) + "?d=wavatar";
+
 
         // Explicitly give a fresh id to the user (we need it for next step)
         user.id = UsersRepository.allocateNewId();
 
         // TODO: find a solution to receive and store profile pictures
+        user.avatar = "http://www.gravatar.com/avatar/" + MD5Utils.md5Hex(user.email) + "?d=wavatar";
 
         // Hash the user password with the id a a salt
         user.password = DigestUtils.sha256Hex(user.password + user.id);
 
+        user.followers = new ArrayList<>();
+        user.following = new ArrayList<>();
+
         // Persist the user into the repository
-        UsersRepository.insertUser(user);
+        UsersRepository.saveUser(user);
 
         // Create and return a token for the new user
         return TokenUtils.generateToken(user.id);

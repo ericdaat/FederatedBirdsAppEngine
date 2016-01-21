@@ -10,6 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.security.SignatureException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +36,7 @@ public class TokenUtils {
                 .compact();
     }
 
-    public static long parseToken(String token){
+    public static long parseToken(String token) throws SignatureException{
         return Long.parseLong(Jwts.parser()
                 .setSigningKey(KEY)
                 .parseClaimsJws(token)

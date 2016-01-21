@@ -22,6 +22,8 @@ public class User {
 
     public String avatar;
     public String coverPicture;
+    public List<User> followers;
+    public List<User> following;
 
     @Index
     public String email;

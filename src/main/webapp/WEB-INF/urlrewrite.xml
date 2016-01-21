@@ -10,13 +10,13 @@
 
     <rule>
         <!-- URLs like /users/78264/followed will be processed as /users?followedBy=78264 -->
-        <from>/users/(\w+)/followed</from>
+        <from>/users/(\w+)/followers</from>
         <to>/users?followedBy=$1</to>
     </rule>
 
     <rule>
         <!-- URLs like /users/78264/followers will be processed as /users?followerOf=78264 -->
-        <from>/users/(\w+)/followers</from>
+        <from>/users/(\w+)/following</from>
         <to>/users?followerOf=$1</to>
     </rule>
 

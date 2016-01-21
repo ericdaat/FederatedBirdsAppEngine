@@ -1,6 +1,5 @@
 package fr.ecp.sio.twitterAppEngine.utils;
 
-import java.util.*;
 import java.io.*;
 import java.security.*;
 
