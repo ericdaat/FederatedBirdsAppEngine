@@ -46,7 +46,7 @@ public class UsersServlet extends JsonServlet {
                 } else {
                     throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
-                users = UsersRepository.getUserFollowed(id,limit);
+                users = UsersRepository.getUserFollowing(id,limit,"dummyCursor");
 
             } else if (paramsMap.containsKey(FOLLOWEDBY)) {
                 String value = paramsMap.get(FOLLOWEDBY);
@@ -57,10 +57,10 @@ public class UsersServlet extends JsonServlet {
                 } else {
                     throw new ApiException(400,"wrongID","ID doesn't match the specs");
                 }
-                users = UsersRepository.getUserFollowers(id);
+                users = UsersRepository.getUserFollowers(id,20,"dummyCursor");
             }
         } else {
-            users = UsersRepository.getUsers();
+            users = UsersRepository.getUsers(20,"dummyCursor");
         }
 
         return users;
@@ -104,7 +104,7 @@ public class UsersServlet extends JsonServlet {
         user.password = DigestUtils.sha256Hex(user.password + user.id);
 
         // Persist the user into the repository
-        UsersRepository.insertUser(user);
+        UsersRepository.saveUser(user);
 
         // Create and return a token for the new user
         return TokenUtils.generateToken(user.id);

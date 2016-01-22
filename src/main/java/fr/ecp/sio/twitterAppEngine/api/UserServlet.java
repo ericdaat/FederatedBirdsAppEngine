@@ -44,7 +44,7 @@ public class UserServlet extends JsonServlet{
                 throw new ApiException(400,"followError","You can't follow/unfollow yourself");
             }
 
-            UsersRepository.setUsersFollowed(
+            UsersRepository.setUserFollowed(
                     me.id,
                     idToFollow,
                     Boolean.parseBoolean(param)
