@@ -61,7 +61,7 @@ public class UsersServlet extends JsonServlet {
                 users = UsersRepository.getUserFollowers(id,limit,"dummy cursor");
             }
         } else {
-            users = UsersRepository.getUsers(20,null);
+            users = UsersRepository.getUsers(20,"dummyCursor");
         }
 
         return users;

@@ -1,17 +1,12 @@
 package fr.ecp.sio.twitterAppEngine.utils;
 
-import fr.ecp.sio.twitterAppEngine.api.ApiException;
-import fr.ecp.sio.twitterAppEngine.data.UsersRepository;
-import fr.ecp.sio.twitterAppEngine.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.security.SignatureException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 

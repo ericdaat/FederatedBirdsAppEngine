@@ -146,16 +146,6 @@ public class JsonServlet extends HttpServlet {
         return GsonFactory.getGson().fromJson(req.getReader(), type);
     }
 
-
-
-
-
-
-
-
-
-
-
     protected User getUserFromRequest(HttpServletRequest req) throws ApiException {
         /**
          * this function will return the targeted user from request url. eg :
