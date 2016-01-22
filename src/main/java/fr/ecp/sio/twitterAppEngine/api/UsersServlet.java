@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -97,8 +98,6 @@ public class UsersServlet extends JsonServlet {
 
         // Explicitly give a fresh id to the user (we need it for next step)
         user.id = UsersRepository.allocateNewId();
-
-        // TODO: find a solution to receive and store profile pictures
 
         // Hash the user password with the id a a salt
         user.password = DigestUtils.sha256Hex(user.password + user.id);

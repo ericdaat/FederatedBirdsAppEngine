@@ -92,12 +92,6 @@ public class UsersRepository {
      */
     public static UsersList getUserFollowing(long id, Integer limit, String cursor) {
         return getUsers(limit, cursor);
-        /*
-        return new UsersList(
-                getUser(id).following,
-                "dummyCursor"
-        );
-        */
     }
 
     /**
@@ -108,12 +102,6 @@ public class UsersRepository {
      */
     public static UsersList getUserFollowers(long id, Integer limit, String cursor) {
         return getUsers(limit, cursor);
-        /*
-        return new UsersList(
-                getUser(id).followers,
-                "dummyCursor"
-        );
-        */
     }
 
     /**
